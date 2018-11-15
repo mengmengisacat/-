@@ -1,0 +1,760 @@
+#输出数组
+member = ['小甲鱼',88,'黑夜',90,'迷途',85,'怡静',90]
+for each in member:
+	print (each)
+
+member = ['小甲鱼',88,'黑夜',90,'迷途',85,'怡静',90]	
+count = 0
+length = len(member)
+while count < length:
+	print(member[count],member[count+1])
+	count += 2
+
+member = ['小甲鱼',88,'黑夜',90,'迷途',85,'怡静',90]	
+for each in range(len(member)):#值得注意的一点是这里 range（）内建函数的 each的值不会受到 循环体内 range变量变化的影响。
+	if each%2 == 0:
+		print(member[each],member[each+1])
+		
+#请写一个密码安全性检查的脚本代码
+#密码安全性检查代码
+#低级密码要求：
+#   1. 密码由单纯的数字或字母组成
+#   2. 密码长度小于等于8位
+#中级密码要求：
+#   1. 密码必须由数字、字母或特殊字符（仅限：~!@#$%^&*()_=-/,.?<>;:[]{}|\）任意两种组合
+#   2. 密码长度不能低于8位
+#高级密码要求：
+#   1. 密码必须由数字、字母及特殊字符（仅限：~!@#$%^&*()_=-/,.?<>;:[]{}|\）三种组合
+#   2. 密码只能由字母开头
+#   3. 密码长度不能低于16位
+symbols = r'~!@#$%^&*()_=-/,.?<>;:[]{}|\'"'
+chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ'
+nums = '0123456789'
+
+passwd = input('请输入需要检查的密码组合：')
+#判断长度
+length = len(passwd)
+while(passwd.isspace() or length == 0):
+	passwd = input('您输入的密码为空，请重新输入：')
+if length<= 8 :
+	flag_len = 1
+elif 8 < length <16:
+	flag_len = 2
+else:
+	flag_len = 3
+flag_con = 0
+#判断是否包含特殊字符
+for each in passwd:
+	if each in symbols:
+		flag_con += 1 
+		break
+#判断是否包含字母
+for each in passwd :
+	if each in chars:
+		flag_con += 1
+		break
+#判断是否包含数字
+for each in passwd:
+	if each in nums:
+		flag_con += 1
+		break
+#打印结果
+while 1 :
+	print('您的密码安全等级评定为：', end = '')
+	if flag_con == 1 or flag_len == 1 :
+		print('低')
+	elif flag_len == 2 or flag_len == 2 :
+		print('中')
+	else :
+		print('高')
+		print('请继续保持')
+		break
+	print('请按以下方式提升您的密码安全级别：\n\
+	\t1.密码必须由数字、字母及特殊字符三种组合\n\
+	\t2. 密码只能由字母开头\n\
+	\t3. 密码长度不能低于16位')
+	break
+	
+#进制转换
+q = True
+while q:
+	num = input('请输入一个整数（输入Q结束程序）：')
+	if num !='Q':
+		num = int (num)
+		print ('十进制 ->十六进制：%d -> 0x%x' %(num,num))
+		print ('十进制 ->八进制：%d -> 0o%o' %(num,num))
+		print ('十进制 ->二进制：%d -> ' %num,bin(num))
+	else:
+		q = False
+
+		
+#查找用户		
+name = input('请输入待查找的用户名：')
+score = [['miao1',85],['miao2',80],['miao3',65],['miao4',95]]
+find = False
+for each in score:
+	if name in each:
+		print(name + '的得分是：',each[1])
+		find = True
+		break
+if find == False:
+	print('查找的数据不存在！')
+	
+#min()这个BIF的实现过程
+def min(x):
+	least = x[0]
+	for each in x:
+		if each < least:
+			least = each 
+	return least
+print(min('123456789'))
+
+#sum() 这个BIF有个缺陷，就是如果参数里有字符串类型的话就会报错，请写出一个新的实现过程，自动“无视”参数里的字符串并返回正确的计算结果
+def sum(x):
+	result = 0
+	for each in x :
+		if (type(each) == int ) or (type(each) == float):
+			result += each
+		else:
+			continue
+	return result
+print(sum([1,2,2.3,'a','1',True]))
+
+#编写一个函数power()模拟内建函数pow()，即power(x, y)为计算并返回x的y次幂的值。
+def power(x,y):
+	result = x**y
+	return result
+print(power(2,3))
+
+#编写一个函数，利用欧几里得算法，求最大公约数，例如gcd(x, y)返回值为参数x和参数y的最大公约数。
+def gcd(x,y):
+	while y:
+		t = x%y
+		x = y
+		y = t
+	return x
+print(gcd(4,6))
+
+#编写一个将十进制转换为二进制的函数，要求采用“除2取余”的方式，结果与调用bin()一样返回字符串形式。
+#非递归
+def Dec2Bin(dec):
+	temp = []
+	result = ''
+	while dec:
+		quo = dec%2
+		dec = dec//2
+		temp.append(quo)
+	while temp:
+		result += str(temp.pop())
+	return result
+print(Dec2Bin(62))
+
+#递归 
+def Bin(n):
+    temp = ''
+    if n:
+        temp = Bin(n//2)
+        temp += str(n%2)  #这两句不能换位置
+        return temp
+    else:
+        return temp        
+
+num = int(input('请输入一个十进制数：'))
+print(num,'-->',Bin(num))
+
+#形参是指函数创建和定义过程中小括号里的参数；而实参指得是函数在被调用过程中传递进来的参数
+def MyFirstFunction(name):
+    '函数定义过程中的name是叫形参'
+    #因为Ta只是一个形式，表示占据一个参数位置
+    print('传递进来的' + name + '叫做实参，因为Ta是具体的参数值！')
+MyFirstFunction('小甲鱼')
+
+# 编写一个符合以下要求的函数：
+# a) 计算打印所有参数的和乘以基数（base=3）的结果
+# b) 如果参数中最后一个参数为（base=5），则设定基数为5，基数不参与求和计算。
+def sum(*params,base=3):
+	result = 0
+	for each in params:
+		result += each
+	return result*base
+sum(1,2,3,4,5,base=5)
+
+#寻找水仙花数
+#如果一个3位数等于其各位数字的立方和，则称这个数为水仙花数。例如153 = 1^3+5^3+3^3，因此153是一个水仙花数。编写一个程序，找出所有的水仙花数。
+def Daffodils():
+	print('所有的水仙花数为：',end='')
+	temp = 100
+	while temp<1000:
+		if temp == (temp//100)**3+((temp%100)//10)**3+(temp%10)**3:
+			print(temp,end=' ')
+			temp += 1
+		else:
+			temp += 1
+print(Daffodils())
+
+#编写一个函数findstr(),该函数统计一个长度为2的子字符串在另一个字符串中出现的次数。例如：假定输入的字符串为"You cannot improve your past, but you can improve your future. Once time is wasted, life is wasted.",子字符串为"im"，函数执行后打印“子字母串在目标字符串中共出现3次”。
+def findstr(desStr,subStr):
+	count = 0
+	length = len(desStr)
+	for each in range(length):
+		if desStr[each] == subStr[0]:
+			if desStr[each+1] == subStr[1]:
+				count += 1
+	if count == 0:
+		print('在目标字符串中未找到子字符串！')
+	else:
+		print('子字母串在目标字符串中共出现%d次'%count)
+desStr=input('请输入目标字符串：')
+subStr=input('请输入子字符串（两个字符）：')
+findstr(desStr,subStr)
+
+#编写一个函数，判断传入的字符串参数是否为“回文联”（回文联即用回文形式写成的对联，既可顺读，也可倒读。例如：上海自来水来自海上）
+#不递归
+def huiwen(string):
+	length = len(string)
+	last = length-1
+	length //= 2
+	flag = 1
+	for each in range(length):
+		if string[each] != string[last]:
+			flag = 0
+			break
+		last -= 1 
+	if flag == 1:
+		return 1
+	else:
+		return 0
+string = input('请输入一句话：')
+if huiwen(string) == 1:
+	print('是回文联！')
+else:
+	print('不是回文联！')
+#回文联  递归
+def huiwen (string,start,end):
+	if start>end:
+		return 1 
+	else :
+		if string[start] == string[end]:
+			return huiwen(string,start+1,end-1)
+		else:
+			return 0
+string = input('请输入一段文字：')
+length=len(string)
+end = length-1
+if huiwen(string,0,end):
+	print ('%s是一个回文字符串！'%string)
+else:
+	print('%s不是一个回文字符串！'%string)
+
+#编写一个函数，分别统计出传入字符串参数（可能不只一个参数）的英文字母、空格、数字和其它字符的个数。
+def count(*param):
+	length = len(param)
+	for i in range(length):
+		word = 0
+		num = 0
+		spa = 0
+		oth = 0
+		for j in param[i]:
+			if j.isalpha():
+				word +=1
+			elif j.isspace():
+				spa += 1
+			elif j.isdigit():
+				num += 1
+			else:
+				oth += 1
+		print('第%d个字符串共有：英文字母%d个，数字%d个，空格%d个，其他字符%d个'%(i+1,word,num,spa,oth))
+count('i love you','mengmeng is a cat!')
+
+#阶乘  非递归
+def factorial(n):
+    result = n
+    for i in range(1, n):
+        result *= i
+
+    return result
+
+number = int(input('请输入一个正整数：'))
+result = factorial(number)
+print("%d 的阶乘是：%d" % (number, result))
+#阶乘 递归			
+def factorial(n):
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+number = int(input('请输入一个正整数：'))
+result = factorial(number)
+print("%d 的阶乘是：%d" % (number, result))	
+	
+#斐波那契数列  迭代
+def fab(n):
+    n1 = 1
+    n2 = 1
+    n3 = 1
+    if n < 1:
+        print('输入有误！')
+        return -1
+    while (n-2) > 0:
+        n3 = n2 + n1
+        n1 = n2
+        n2 = n3
+        n -= 1
+    return n3
+result = fab(45)
+if result != -1:
+    print('总共有%d对小兔崽子诞生！' % result)
+	
+#斐波那契数列  递归
+def fab(n):
+    if n < 1:
+        print('输入有误！')
+        return -1
+    if n == 1 or n == 2:
+        return 1
+    else:
+        return fab(n-1) + fab(n-2)
+result = fab(35)
+if result != -1:
+    print('总共有%d对小兔崽子诞生！' % result)	
+
+	
+#汉诺塔  递归
+def hanoi(n, x, y, z):
+    if n == 1:
+        print(x, ' --> ', z)
+    else:
+        hanoi(n-1, x, z, y) # 将前n-1个盘子从x移动到y上
+        print(x, ' --> ', z) # 将最底下的最后一个盘子从x移动到z上
+        hanoi(n-1, y, x, z) # 将y上的n-1个盘子移动到z上
+
+n = int(input('请输入汉诺塔的层数：'))
+hanoi(n, 'X', 'Y', 'Z')	
+
+#递归求年龄
+#5人坐在一起，第5比第4大2岁，第四比第三大2 岁，第三比第二大2岁。第二比第一大2 岁，第一10岁，第五几岁
+def Age(n):
+	if n == 1 :
+		return 10
+	if n>1:
+		age = 10
+		age = Age(n-1)+2
+		return age
+num = int (input('请输入要查询的编号：'))
+print('第%d个人的年龄是：%d'%(num,Age(num)))
+
+#尝试利用字典的特性编写一个通讯录程序
+#1.查询联系人资料2.插入新的联系人3.删除已有联系人4.退出通信录程序
+print('|---欢迎进入通信录程序---|')
+print('|---1：查询联系人资料---|')
+print('|---2：插入新的联系人---|')
+print('|---3：删除已有联系人---|')
+print('|---4：退出通信录程序---|')
+contacts = dict()
+while 1 :
+	instr = int(input('\n请输入相关的指令代码：'))
+	if instr == 1:
+		name=input('请输入联系人姓名：')
+		if name in contacts:
+			print(name + ':'+contacts[name])
+		else:
+			print('你输入的姓名不在通信录中！')
+	elif instr == 2:
+		name = input('请输入姓名：')
+		if name in contacts:
+			print('您输入的姓名已经在通信录中-->>',end = '')
+			print(name + ':'+contacts[name])
+			if input('是否修改用户资料（YES/NO）：') == 'YES':
+				contacts[name] = input('请输入用户联系电话：')
+		else:
+			contacts[name] = input('请输入用户联系电话：')
+	elif instr == 3:
+		name = input('请输入联系人姓名：')
+		if name in contacts:
+			del(contacts[name])
+		else:
+			print('您输入的联系人不存在。')
+	elif instr == 4:
+		break
+print ('|---感谢使用通信录程序---|')
+
+#编写一个用户登录程序
+#1、新建用户2、登陆账号3、退出
+def load():
+	dict1={}
+	while 1:
+		print('|---新建用户：N/n---|')
+		print('|---登陆账号：E/e---|')
+		print('|---退出程序：Q/q---|')
+		key = input('|---请输入指令代码：')
+		if key == 'N' or key == 'n':
+			user = input('请输入用户名：')
+			while user in dict1:
+				user = input('此用户名已经被使用，请重新输入：')
+			passwd = input('请输入密码：')
+			dict1[user] = passwd
+			print('注册成功，赶紧试试登录吧！')
+			continue
+		elif key == 'E' or key == 'e':
+			user = input('请输入用户名：')
+			while user not in dict1:
+				user = input('您输入的用户名不存在，请重新输入：')
+			passwd = input('请输入密码：')
+			while passwd != dict1[user]:
+				passwd = input('密码错误，请重新输入：')
+			print('欢迎进入系统！')
+			break
+		elif key == 'Q' or key == 'q':
+			break
+load()
+
+#分割文件
+#（1）小甲鱼的对话单独保存为boy_*.txt的文件（去掉“小甲鱼:”）
+#（2）小客服的对话单独保存为girl_*.txt的文件（去掉“小客服:”）
+#（3）文件中总共有三段对话，分别保存为boy_1.txt, girl_1.txt，boy_2.txt, girl_2.txt, boy_3.txt, gril_3.txt共6个文件（提示：文件中不同的对话间已经使用“==========”分割）
+f = open ('D:\\record.txt')
+boy = []
+girl = []
+count = 1
+for each_line in f:
+	if each_line[:6] != '======':
+		(role,line_spoken) = each_line.split(':',1)
+		if role == '小甲鱼':
+			boy.append(line_spoken)
+		if role == '小客服':
+			girl.append(line_spoken)
+	else:
+		file_name_boy = 'boy_'+str(count)+'.txt'
+		file_name_girl = 'girl_'+str(count)+'.txt'
+		boy_file = open(file_name_boy,'w')
+		girl_file = open(file_name_girl,'w')
+		boy_file.writelines(boy)
+		girl_file.writelines(girl)
+		boy_file.close()
+		girl_file.close()
+		boy = []
+		girl = []
+		count += 1
+file_name_boy = 'boy_' + str(count) + '.txt'
+file_name_girl = 'girl_'+ str(count) + '.txt'
+boy_file = open(file_name_boy,'w')
+girl_file = open(file_name_girl,'w')
+boy_file.writelines(boy)
+girl_file.writelines(girl)
+boy_file.close()
+girl_file.close()
+f.close()
+#有解释版
+#打开record.txt文件
+f = open('D:\\record.txt')  
+ 
+#定义3个变量，并对它们初始化
+boy = []     
+girl = []
+count = 1
+ 
+#循环读取文件
+for each_line in f:
+  
+  #如果当前内容不等于"======"，则继续读取内容；否则读取，开始写操作
+  if each_line[:6] != "======":            
+    
+    #读取的内容以":"进行分割，分割后分别赋值给元组元素role和spoken
+    (role,spoken) = each_line.split('：',1) 
+    
+    #如果对话角色为"小甲鱼"，则将文件追加到boy列表中
+    if role == '小甲鱼':                  
+       boy.append(spoken)
+       
+    #如果对话角色为"小客服"，则将文件追加到girl列表中
+    if role == '小客服':                   
+       girl.append(spoken)
+  else:
+     #定义输出文件名称
+     file_name_boy = 'boy_'+str(count)+'.txt'  
+     file_name_girl = 'girl_'+str(count)+'.txt' 
+    
+     #打开文件
+     boy_file = open(file_name_boy,'w')         
+     girl_file = open(file_name_girl,'w')     
+     
+     #writelines的参数是序列(比如列表)，它会迭代帮你写入文件。
+     boy_file.writelines(boy)     
+     girl_file.writelines(girl) 
+     
+     #关闭文件对象
+     boy_file.close()                                   
+     girl_file.close()                          
+     
+     #当前写操作完毕后，必须进行初始化操作，以准备下一个的写入操作
+     boy = []
+     girl = []
+     count += 1
+ 
+#因为第三段对话的结尾没有"==="，所以需要再次进行上面的重复写操作，保存第三段对话
+#定义输出文件名称     
+file_name_boy = 'boy_'+str(count)+'.txt'  
+file_name_girl = 'girl'+str(count)+'.txt'  
+ 
+#打开文件    
+boy_file = open(file_name_boy,'w')         
+girl_file = open(file_name_girl,'w') 
+ 
+#writelines的参数是序列(比如列表)，它会迭代帮你写入文件。     
+boy_file.writelines(boy)   
+girl_file.writelines(girl) 
+ 
+#关闭文件对象      
+boy_file.close()                                
+girl_file.close()                    
+ 
+#关闭文件对象
+f.close()
+
+
+#函数封装分割文件
+def save_file(boy,girl,count):
+    #定义输出文件名称
+    file_name_boy = 'boy_' + str(count) + '.txt'
+    file_name_girl = 'girl_' + str(count) + '.txt'
+    #打开文件
+    boy_file = open('E:\\%s'%file_name_boy,'w')
+    girl_file = open('E:\\%s'%file_name_girl,'w')
+    #writelines的参数是序列（比如列表），它会迭代帮你写入文件 
+    boy_file.writelines(boy)
+    girl_file.writelines(girl)
+    #关闭文件对象 
+    boy_file.close()
+    girl_file.close()
+#定义一个读取和分割文件内容的方法
+def split_file(file_name):
+    f = open('E:\\record.txt')
+    #定义3个变量，并对它们初始化
+    boy = []
+    girl = []
+    count = 1
+    #循环读取文件
+    for each_line in f:
+        #如果当前内容不等于“======”，则读取内容分割；否则分类保存文件
+        if each_line[:6] != '======':
+            #读取的内容以“：”进行分割，分割后分别赋值给role和line_spoken
+            (role,line_spoken) = each_line.split('：',1)
+            #按对话角色分别把spoken追加到不同的表中
+            if role == '小甲鱼':
+                boy.append(line_spoken)
+            if role == '小客服':
+                girl.append(line_spoken)
+        else:
+            #保存文件
+            save_file(boy,girl,count)
+            #保存文件后，再初始化变量
+            count += 1
+            boy = []
+            girl = []
+    #因为第三段对话的结尾没有"==="，所以需要再调用save_file方法，保存第三段对话
+    save_file(boy,girl,count)
+    f.close()
+#主方法：只要调用split_file就可以完成所有的操作
+split_file('E:\\record.txt')
+
+#用pickle分割
+import pickle
+def save_pickle_file(boy,girl,count):
+	file_name_boy = 'boy_' + str(count) + '.txt'
+    file_name_girl = 'girl_' + str(count) + '.txt'
+    boy_pickle_file = open(file_name_boy,'wb')
+    girl_pickle_file = open(file_name_girl,'wb')
+	pickle.dump(boy,boy_pickle_file)
+    pickle.dump(girl,girl_pickle_file)
+    boy_pickle_file.close()
+    girl_pickle_file.close()
+def split_file(file_name):
+	f = open(file_name)
+	boy = []
+	girl = []
+	count = 1
+	for each_line in f:
+        if each_line[:6] != '======':
+            (role,line_spoken) = each_line.split(':',1)
+            if role == '小甲鱼':
+                boy.append(line_spoken)
+            elif role == '小客服':
+                girl.append(line_spoken)
+        else:
+            save_pickle_file(boy,girl,count)
+            count += 1
+            boy = []
+            girl = []
+    save_pickle_file(boy,girl,count)
+    f.close()
+	
+
+
+#编写一个程序，接受用户的输入并保存为新的文件：
+#先输入文件名，然后打开文件，调用write将输入的字符串写入文件中，以：w作为写完标识符，写完之后调用close函数即完成文件的写入。
+def filewrite(file_name):
+	print('请输入内容【单独输入‘：w’保存退出】：')
+	f=open(file_name,'w')
+	while 1:
+		a = input ()
+		if a!= ':w':
+			f.write('%s'%a)
+		else:
+			break
+	f.close()
+file_name = input('请输入文件名：')
+filewrite(file_name)
+
+#编写一个程序比较用户输入的两个文件，如果不同，显示出所有不同处的行号与第一个不同字符的位置
+def compare(fname1,fname2):
+	f1 = open(fname1)
+	f2 = open(fname2)
+	count = 0#统计行数
+	differ = []#统计不一样的数量
+	for line1 in f1:
+		line2 = f2.readline()
+		count += 1
+		if line1 != line2:
+			differ.append(count)
+	f1.close()
+	f2.close()
+	return differ
+fname1 = input('请输入需要比较的头一个文件名：')
+fname2 = input('请输入需要比较的另一个文件名：')
+differ = compare(fname1,fname2)
+lenth = len(differ)
+if len(differ)== 0:
+	print('两个文件完全一样！')
+else:
+	print('两个文件共有%d处不同'%len(differ))
+	for each in differ:
+		print('第%d行不一样'%each)
+
+#编写一个程序，当用户输入文件名和行数（N）后，将该文件的前N行内容打印到屏幕上：
+def file_view(file_name,line_num):
+	print('\n文件%s的前%s的内容如下：\n'%(file_name,line_num))
+	f = open(file_name)
+	for i in range(int (line_num)):
+		print(f.readline(),end = '')
+	f.close()
+file_name = input(r'请输入要打开的文件（如C:\\test.txt）：')
+line_num = input('请输入需要显示该文件前几行：')
+file_view(file_name,line_num)
+#     文件部分
+#编写一个程序，统计当前目录下每个文件类型的文件数
+import os
+all_files = os.listdir(os.curdir)
+type_dict = dict()
+for each_file in all_files:
+    if os.path.isdir(each_file):
+        type_dict.setdefault('文件夹',0)
+        type_dict['文件夹'] += 1
+    else:
+        ext = os.path.splitext(each_file)[1]
+        type_dict.setdefault(ext,0)
+        type_dict[ext] += 1
+for each_type in type_dict.keys():
+    print('该文件夹下共有类型为【%s】的文件%d个'%(each_type,type_dict[each_type]))
+
+#编写一个程序，计算当前文件夹下所有文件的大小
+import os
+def file_size():
+    file_name = os.listdir(os.curdir)
+    dict1 = dict()
+    for each_file in file_name:
+        if os.path.isfile(each_file):
+            dict1.setdefault(each_file,os.path.getsize(each_file))
+            print('%s的大小为：【%d Bytes】'%(each_file,dict1[each_file]))
+file_size()
+
+#编写一个程序，用户输入文件名以及开始搜索的路径，搜索该文件是否存在。如遇到文件夹，则进入文件夹继续搜索。
+import os
+ 
+def search_file(start_dir, target) :
+    os.chdir(start_dir)
+    for each_file in os.listdir(os.curdir) :
+        if each_file == target :
+            print(os.getcwd() + os.sep + each_file) 
+        if os.path.isdir(each_file) :
+            search_file(each_file, target) 
+            os.chdir(os.pardir) #切记返回上一层目录
+start_dir = input('请输入待查找的初始目录：')
+target = input('请输入需要查找的目标文件：')
+search_file(start_dir, target)
+
+#编写一个程序，用户输入关键字，查找当前文件夹内（如果当前文件夹内包含文件夹，则进入文件夹继续搜索）所有含
+#有该关键字的文本文件（.txt后缀），要求显示该文件所在的位置以及关键字在文件中的具体位置（第几行第几个字符）
+import os
+def print_keywords(dict_keywords):
+    keys = dict_keywords.keys()
+    keys = sorted(keys)
+    for each in keys:
+        print('关键字出现在第%s行，第%s个位置'%(each,str(dict_keywords[each])))
+    
+def line_keywords(line, keywords):
+    key_index = []
+    start = line.find(keywords)
+    while start!=-1:
+        key_index.append(start+1)
+        start = line.find(keywords, start+1)
+    return key_index       
+    
+ 
+def file_keywords(filename, keywords):
+    f = open(filename,'r')
+    line = 0
+    dict_keywords = dict()
+    for each_line in f:
+        line +=1
+        if keywords in each_line:
+                key_index = line_keywords(each_line, keywords)
+                dict_keywords[line]= key_index
+    f.close()
+    return dict_keywords
+ 
+    
+def file_search(keywords, flag):
+    all_files = os.walk(os.getcwd())
+    txt_list = []
+ 
+    for each in all_files:
+        for filename in each[2]:
+            if os.path.splitext(filename)[1]== '.txt':
+                txt_list.append(os.path.join(each[0],filename))
+ 
+    for each_txt_file in txt_list:
+        dict_keywords = file_keywords(each_txt_file, keywords)#调用file_keywords函数
+        print('====================================================')
+        print('在文件【%s】中找到关键字【%s】' % (each_txt_file, keywords))
+        if flag in ['YES','Yes','yes']:
+            print_keywords(dict_keywords)
+ 
+        
+keywords = input("请将该脚本放于待查找的文件夹中，请输入关键字:")
+flag = input("请问是否需要打印关键字【%s】在文件中的具体位置（YES/NO）:")
+file_search(keywords, flag)
+
+#编写一个程序，用户输入开始搜索的路径，查找该路径下（包含子文件夹内）所有的视频格式文件（要求查找mp4
+#rmvb, avi的格式即可），并把创建一个文件（VedioList.txt）存放所有找到的文件的路径。
+import os
+ 
+vedio_list = []
+ 
+def search_file(start_dir):
+    os.chdir(start_dir)
+    for each_file in os.listdir(os.curdir):
+        if os.path.isfile(each_file):
+            file_ext = os.path.splitext(each_file)[1]
+            if file_ext in ['.mp4','rmvb','.avi']:
+                vedio_list.append(os.getcwd() + os.sep + each_file + os.linesep)
+        if os.path.isdir(each_file):
+            search_file(each_file)
+            os.chdir(os.pardir)
+    return vedio_list
+ 
+start_dir = input('请输入待查找的初始目录：')
+vedio_list = search_file(start_file)
+f = open(os.getcwd() + os.sep + 'VedioList.txt','w')
+f.writelines(vedio_list)
+f.close()
