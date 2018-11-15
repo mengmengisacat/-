@@ -1,0 +1,149 @@
+#第一个图形小游戏
+import easygui as g
+import sys
+while 1 :
+	g.msgbox('嗨，欢迎进入第一个界面游戏：')
+	msg = '请问你希望学到什么知识呢？'
+	title = '游戏小互动'
+	choices = ['谈恋爱','编程','demo','琴棋书画']
+	choices = g.choicebox(msg,title,choices)
+	g.msgbox('您的选择是：'+str(choices),'结果')
+	msg = '你希望重新开始小游戏吗？'
+	title = '请选择'
+	if g.ccbox(msg,title):
+		pass
+	else:
+		sys.exit(0)
+
+		
+#猜数字游戏加页面
+import easygui as g
+import random
+g.msgbox('嗨，欢迎进入猜数字游戏！')
+secret = random.randint(1,10)
+msg = '猜猜我心中的数字是什么（1~10）：'
+title = '数字小游戏'
+guess = g.integerbox(msg,title,lowerbound = 1,upperbound = 10)
+while 1:
+	if guess == secret:
+		g.msgbox('你是我肚里的蛔虫吗！')
+		break
+	else:
+		if guess > secret:
+			g.msgbox('猜大了，再试试')
+		else:
+			g.msgbox('猜小了，再试试')
+		guess = g.integerbox(msg,title,lowerbound = 1,upperbound = 10)
+g.msgbox('游戏结束，不玩啦！')
+
+#实现一个用于登记用户账号信息的界面（如果是带*号的必填项，要求一定要有输入并且不能是空格）
+#真实姓名、手机号码、E-mail必填，固定电话、QQ选填
+import easygui as g
+msg = '【*真实姓名为必填项】\n【*手机号为必填项】\n【E-mail为必填项】'
+title = '账号中心'
+fieldNames = ['用户名','*真实姓名','固定电话','*手机号码','QQ','*E-mail']
+fieldValues = []# 创建一个空列表存放账号信息\
+fieldValues = g.multenterbox(msg,title,fieldNames)
+#确保必填项字段不为空
+while 1:
+	if fieldValues == None:
+		break
+	errmsg = ''
+	for i in range(len(fieldNames)):
+		option = fieldNames[i].strip()
+		if fieldValues[i].strip() == '' and option[0] == '*':
+			errmsg += ('"%s"是必填字段，\n\n'%fieldNames[i])
+	if errmsg == '':
+		break
+	fieldValues = g.multenterbox(errmsg,title,fieldNames,fieldValues)
+print('用户资料如下：%s'%str(fieldValues))
+			
+#提供一个文件浏览框，让用户选择需要打开的py文件，打开并显示文件内容。
+import easygui as g
+import os
+file_path = g.fileopenbox(default = '*.py')
+with open(file_path) as f:
+	title = os.path.basename(file_path)
+	msg = '文件【%s】的内容如下：'%title
+	text = f.read()
+	g.textbox(msg,title,text)
+
+#在上一题的基础上增强功能：当用户点击“OK”按钮的时候，比较当前文件是否修改过，如果修改过，则提示“覆盖保存”、“放弃保存”或“另存为…”并实现相应的功能。
+import easygui as g
+import os
+file_path = g.fileopenbox(default = '*.py')
+with open(file_path) as f:
+	title = os.path.basename(file_path)
+	msg = '文件【%s】的内容如下：'%title
+	text = f.read()
+	text_after = g.textbox(msg,title,text)
+if text != text_after[:-1]:
+	#textbox的返回值会追加一个换行符
+	choice = g.buttonbox('文件已修改，请做出选择：','警告',('覆盖保存','放弃保存','另存为……'))
+	if choice == '覆盖保存':
+		with open(file_path,'w') as f:
+			f.write(text_after[:-1])
+	if choice == '放弃保存':
+		pass
+	if choice == '另存为……':
+		another_path = g.filesavebox(default = '.py')
+		if os.path.splitext(another_path)[1] != '.py':
+			another_path += '.py'
+		with open (another_path,'w') as new_file:
+			new_file.write(text_after[:-1])
+
+#写一个程序统计你当前代码量的总和，并显示离十万行代码量还有多远？
+#要求一：递归搜索各个文件夹
+#要求二：显示各个类型的源文件和源代码数量
+#要求三：显示总行数与百分比
+import easygui as g
+import os
+def show_result(start_dir):
+	lines = 0
+	total = 0
+	text = ''
+	for i in source_list:
+		lines = source_list[i]
+		total += lines
+		text += '【%s】源文件%d个，源代码%d行\n'%(i,file_list[i],lines)
+	title = '统计结果'
+	msg1 = '您目前共写了 %d 行代码，完成进度：%.2f %%\n离10万行代码还差 %d 行，请继续努力！' % (total, total/1000, 100000 - total)
+	msg2 = '您目前共写了 %d 行代码，完成进度：%.2f %%\n超额完成 %d 行，真棒！' % (total,  total/1000, total - 100000)
+	if total <= 100000:
+		g.textbox(msg1,title,text)
+	else:
+		g.textbox(msg2,title,text)
+def calc_code(file_name):
+	lines = 0
+	with open(file_name) as f:
+		print('正在分析文件：%s...'%file_name)
+		try:
+			for each_line in f:
+				lines += 1
+		except UnicodeDecodeError:
+			pass
+	return lines
+def search_file(start_dir):#明天起床再看一遍
+	os.chdir(start_dir)
+	for each_file in os.listdir(os.curdir):
+		ext = os.path.splitext(each_file)[1]
+		if ext in target:
+			lines = calc_code(each_file)
+			try:
+				file_list[ext] += 1
+			except KeyError:
+				file_list[ext] = 1
+			try:
+				source_list[ext] += lines
+			except KeyError:
+				source_list[ext] = lines
+		if os.path.isdir(each_file):
+			search_file(each_file)
+			os.chdir(os.pardir)
+target = ['.c', '.cpp', '.py', '.cc', '.java','.pas', '.asm']
+file_list = {}
+source_list = {}
+g.msgbox("请打开您存放所有代码的文件夹......", "统计代码量")
+path = g.diropenbox("请选择你的代码库：")
+search_file(path)
+show_result(path)
