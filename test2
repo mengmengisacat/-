@@ -1,0 +1,425 @@
+#按照以下提示尝试定义一个Person类并生成类实例对象。
+#属性：姓名（默认姓名为“小甲鱼”）
+#方法：打印姓名
+#提示：方法中对属性的引用形式加上self，如self.name
+class Person:
+	#属性
+	name = '萌萌'
+	def printName(self):
+		print(self.name)
+
+#按照以下提示尝试定义一个矩阵类并生成类实例对象。
+#属性：长和宽
+#方法：设置长和宽->setRect(self)，获得长和宽->getRect(self)，获得面积->getArea(self)
+#提示：方法中对属性的引用形式加上self，如self.width
+class Rectangle:
+	#属性
+	length = 1
+	width = 1
+	#方法
+	def setRect(self):
+		print("请输入矩形的长和宽")
+		self.length = float(input('长：'))
+		self.width = float(input('宽：'))
+	def getRect(self):
+		print('这个矩形的长是：%.2f，宽是%.2f'%(self.length,self.width))
+	def getArea(self):
+		return self.length*self.width
+
+#按照以下要求定义一个游乐园门票的类，并尝试计算2个成人+1个小孩平日票价。
+#1、平日票价100元
+#2、周末票价为平日的120%
+#3、儿童半票
+class Ticket():
+	def __init__(self,weekend = False,child = False):
+		self.exp = 100
+		if weekend:
+			self.inc = 1.2
+		else :
+			self.inc = 1
+		if child:
+			self.discount = 0.5
+		else:
+			self.discount = 1
+	def calcPrice(self,num):
+		return self.exp*self.inc*self.discount*num
+adult = Ticket()
+child = Ticket(child = True)
+print('2个成人+1个小孩平日票价为：%.2f'%(adult.calcPrice(2)+child.calcPrice(1)))
+
+#按要求定义一个乌龟类和鱼类并尝试开始编程
+#1、假设游戏场景为范围（x,y）为0<=x<=10,0<=y<=10
+#2、游戏生成1只乌龟和10条鱼
+#3、他们的移动方向均随机
+#4、乌龟的最大移动能力是2（TA可以随机选择1或者2移动），鱼的最大移动能力是1
+#5、当移动到场景边缘，自动向反方向移动
+#6、乌龟初始化体力为100（上限）
+#7、乌龟每移动一次，体力消耗1
+#8、当乌龟和鱼坐标重叠，乌龟吃掉鱼，乌龟体力增加20
+#9、鱼暂不计算体力
+#0、当乌龟体力值为0（挂掉）或者鱼的数量为0游戏结束
+import random as r
+legal_x = [0,10]
+class Turtle:
+	def __init__(self):
+		#初始体力
+		self.power = 100
+		#初始位置随机
+		self.x = r.randint(legal_x[0],legal_x[1])
+		self.y = r.randint(legal_y[0],legal_y[1])
+	def move(self):
+		#计算乌龟移动的距离
+		new_x = self.x + r.choice([1,2,-1,-2])
+		new_y = self.y + r.choice([1,2,-1,-2])
+		#判断是否超出了x边界
+		if new_x < legal_x[0]:
+			self.x = legal_x[0] - (new_x - legal_x[0])
+		elif new_x > legal_x[1]:
+			self.x = legal_x[1] - (new_x - legal_x[1])
+		else:
+			self.x = new_x
+		#判断是否超出了y边界
+		if new_y < legal_y[0]:
+			self.y = legal_y[0] - (new_y - legal_y[0])
+		elif new_y > legal_y[1]:
+			self.y = legal_y[1] - (new_y - legal_y[1])
+		else:
+			self.y = new_y
+		#体力减一
+		self.power -= 1
+		return (self.x,self.y)
+	def eat(self):
+		self.power += 20
+		if self.power > 100:
+			self.power = 100
+class Fish:
+	def __init__(self):
+		#初始位置随机
+		self.x = r.randint(legal_x[0],legal_x[1])
+		self.y = r.randint(legal_y[0],legal_y[1])
+	def move(self):
+		#计算鱼移动的距离
+		new_x = self.x + r.choice([1,-1])
+		new_y = self.y + r.choice([1,-1])
+		#判断是否超出了x边界
+		if new_x < legal_x[0]:
+			self.x = legal_x[0] - (new_x - legal_x[0])
+		elif new_x > legal_x[1]:
+			self.x = legal_x[1] - (new_x - legal_x[1])
+		else:
+			self.x = new_x
+		#判断是否超出了y边界
+		if new_y < legal_y[0]:
+			self.y = legal_y[0] - (new_y - legal_y[0])
+		elif new_y > legal_y[1]:
+			self.y = legal_y[1] - (new_y - legal_y[1])
+		else:
+			self.y = new_y
+		return (self.x,self.y)
+#开始乌龟吃鱼游戏，生成一只乌龟，十条鱼
+turtle = Turtle()
+fish = []
+for i in range(10):
+	new_fish = Fish()
+	fish.append(new_fish)
+i=0
+while True:
+	if turtle.power < 0:
+		print('乌龟体力耗尽，挂掉了！！！')
+		break
+	if len(fish) == 0:
+		print('鱼儿都被吃完，游戏结束！！！')
+		break
+	#游戏开始
+	pos = turtle.move()
+	for each_fish in fish[:]:
+		if each_fish.move() == pos:
+			turtle.eat()
+			fish.remove(each_fish)
+			print('鱼在（%d，%d）被吃掉一条...'%(pos[0],pos[1]))
+	i += 1
+	print ('乌龟共走了%d步'%i)
+
+#定义一个点（Point）类和直线（Line）类，使用getLen方法可以获得直线的长度
+#提示：
+#*设定点A（X1,Y1）,点B(X2,Y2)，则亮点构成的直线长度|AB|=√((x1-x2)2+(y1-y2)2)
+#*Python中计算开根号可使用math模块中的sqrt函数
+#*直线需有亮点构成，因此初始化时需有两个点（Point）对象作为参数
+import math
+class Point():
+	def __init__(self,x,y):
+		self.x = x
+		self.y = y
+	def getX(self):
+		return self.x
+	def getY(self):
+		return self.y
+class Line():
+	def __init__(self,p1,p2):
+		self.x = p1.getX() - p2.getX()
+		self.y = p1.getY() - p2.getY()
+		self.len = math.sqrt(self.x*self.x + self.y*self.y)
+	def getLen(self):
+		return self.len
+		
+p1 = Point(1,1)
+p2 = Point(4,5)
+line = Line(p1,p2)
+line.getLen()
+
+#在一个类中定义一个变量，用于跟踪该类有多少个实例被创建（当实例化一个对象，这个变量加1，当销毁一个变量，这个变量就自动减1 ）
+class C:
+	count = 0
+	def __init__(self):
+		C.count += 1
+	def __del__(self):
+		C.count -= 1
+a= C()
+b= C()
+c= C()
+C.count
+del a
+C.count
+
+#定义一个栈（Stack）类，用于模拟一种具有先进后出（LIFO）特性的数据结构。至少需要有一下方法
+#isEmpty()  判断当前栈是否为空（返回True或False）
+#push()     往栈的顶部压入一个数据项
+#pop()      从栈顶弹出一个数据项（并在栈中删除）
+#top()      显示当前栈顶的一个数据项
+#bottom()   显示当前栈底的一个数据项
+class Stack:
+	def __init__(self,start=[]):
+		self.stack = []
+		for x in start:
+			self.push(x)
+			
+	def isEmpty(self):
+		return not self.stack
+	def push(self,obj):
+		self.stack.append(obj)
+	def pop(self):
+		if not self.stack:
+			print('警告：栈为空！')
+		else:
+			return self.stack.pop()
+	def top(self):
+		if not self.stack:
+			print('警告：栈为空！')
+		else:
+			return self.stack[-1]
+	def bottom(self):
+		if not self.stack:
+			print('警告：栈为空！')#按照以下提示尝试定义一个Person类并生成类实例对象。
+#属性：姓名（默认姓名为“小甲鱼”）
+#方法：打印姓名
+#提示：方法中对属性的引用形式加上self，如self.name
+class Person:
+	#属性
+	name = '萌萌'
+	def printName(self):
+		print(self.name)
+
+#按照以下提示尝试定义一个矩阵类并生成类实例对象。
+#属性：长和宽
+#方法：设置长和宽->setRect(self)，获得长和宽->getRect(self)，获得面积->getArea(self)
+#提示：方法中对属性的引用形式加上self，如self.width
+class Rectangle:
+	#属性
+	length = 1
+	width = 1
+	#方法
+	def setRect(self):
+		print("请输入矩形的长和宽")
+		self.length = float(input('长：'))
+		self.width = float(input('宽：'))
+	def getRect(self):
+		print('这个矩形的长是：%.2f，宽是%.2f'%(self.length,self.width))
+	def getArea(self):
+		return self.length*self.width
+
+#按照以下要求定义一个游乐园门票的类，并尝试计算2个成人+1个小孩平日票价。
+#1、平日票价100元
+#2、周末票价为平日的120%
+#3、儿童半票
+class Ticket():
+	def __init__(self,weekend = False,child = False):
+		self.exp = 100
+		if weekend:
+			self.inc = 1.2
+		else :
+			self.inc = 1
+		if child:
+			self.discount = 0.5
+		else:
+			self.discount = 1
+	def calcPrice(self,num):
+		return self.exp*self.inc*self.discount*num
+adult = Ticket()
+child = Ticket(child = True)
+print('2个成人+1个小孩平日票价为：%.2f'%(adult.calcPrice(2)+child.calcPrice(1)))
+
+#按要求定义一个乌龟类和鱼类并尝试开始编程
+#1、假设游戏场景为范围（x,y）为0<=x<=10,0<=y<=10
+#2、游戏生成1只乌龟和10条鱼
+#3、他们的移动方向均随机
+#4、乌龟的最大移动能力是2（TA可以随机选择1或者2移动），鱼的最大移动能力是1
+#5、当移动到场景边缘，自动向反方向移动
+#6、乌龟初始化体力为100（上限）
+#7、乌龟每移动一次，体力消耗1
+#8、当乌龟和鱼坐标重叠，乌龟吃掉鱼，乌龟体力增加20
+#9、鱼暂不计算体力
+#0、当乌龟体力值为0（挂掉）或者鱼的数量为0游戏结束
+import random as r
+legal_x = [0,10]
+class Turtle:
+	def __init__(self):
+		#初始体力
+		self.power = 100
+		#初始位置随机
+		self.x = r.randint(legal_x[0],legal_x[1])
+		self.y = r.randint(legal_y[0],legal_y[1])
+	def move(self):
+		#计算乌龟移动的距离
+		new_x = self.x + r.choice([1,2,-1,-2])
+		new_y = self.y + r.choice([1,2,-1,-2])
+		#判断是否超出了x边界
+		if new_x < legal_x[0]:
+			self.x = legal_x[0] - (new_x - legal_x[0])
+		elif new_x > legal_x[1]:
+			self.x = legal_x[1] - (new_x - legal_x[1])
+		else:
+			self.x = new_x
+		#判断是否超出了y边界
+		if new_y < legal_y[0]:
+			self.y = legal_y[0] - (new_y - legal_y[0])
+		elif new_y > legal_y[1]:
+			self.y = legal_y[1] - (new_y - legal_y[1])
+		else:
+			self.y = new_y
+		#体力减一
+		self.power -= 1
+		return (self.x,self.y)
+	def eat(self):
+		self.power += 20
+		if self.power > 100:
+			self.power = 100
+class Fish:
+	def __init__(self):
+		#初始位置随机
+		self.x = r.randint(legal_x[0],legal_x[1])
+		self.y = r.randint(legal_y[0],legal_y[1])
+	def move(self):
+		#计算鱼移动的距离
+		new_x = self.x + r.choice([1,-1])
+		new_y = self.y + r.choice([1,-1])
+		#判断是否超出了x边界
+		if new_x < legal_x[0]:
+			self.x = legal_x[0] - (new_x - legal_x[0])
+		elif new_x > legal_x[1]:
+			self.x = legal_x[1] - (new_x - legal_x[1])
+		else:
+			self.x = new_x
+		#判断是否超出了y边界
+		if new_y < legal_y[0]:
+			self.y = legal_y[0] - (new_y - legal_y[0])
+		elif new_y > legal_y[1]:
+			self.y = legal_y[1] - (new_y - legal_y[1])
+		else:
+			self.y = new_y
+		return (self.x,self.y)
+#开始乌龟吃鱼游戏，生成一只乌龟，十条鱼
+turtle = Turtle()
+fish = []
+for i in range(10):
+	new_fish = Fish()
+	fish.append(new_fish)
+i=0
+while True:
+	if turtle.power < 0:
+		print('乌龟体力耗尽，挂掉了！！！')
+		break
+	if len(fish) == 0:
+		print('鱼儿都被吃完，游戏结束！！！')
+		break
+	#游戏开始
+	pos = turtle.move()
+	for each_fish in fish[:]:
+		if each_fish.move() == pos:
+			turtle.eat()
+			fish.remove(each_fish)
+			print('鱼在（%d，%d）被吃掉一条...'%(pos[0],pos[1]))
+	i += 1
+	print ('乌龟共走了%d步'%i)
+
+#定义一个点（Point）类和直线（Line）类，使用getLen方法可以获得直线的长度
+#提示：
+#*设定点A（X1,Y1）,点B(X2,Y2)，则亮点构成的直线长度|AB|=√((x1-x2)2+(y1-y2)2)
+#*Python中计算开根号可使用math模块中的sqrt函数
+#*直线需有亮点构成，因此初始化时需有两个点（Point）对象作为参数
+import math
+class Point():
+	def __init__(self,x,y):
+		self.x = x
+		self.y = y
+	def getX(self):
+		return self.x
+	def getY(self):
+		return self.y
+class Line():
+	def __init__(self,p1,p2):
+		self.x = p1.getX() - p2.getX()
+		self.y = p1.getY() - p2.getY()
+		self.len = math.sqrt(self.x*self.x + self.y*self.y)
+	def getLen(self):
+		return self.len
+		
+p1 = Point(1,1)
+p2 = Point(4,5)
+line = Line(p1,p2)
+line.getLen()
+
+#在一个类中定义一个变量，用于跟踪该类有多少个实例被创建（当实例化一个对象，这个变量加1，当销毁一个变量，这个变量就自动减1 ）
+class C:
+	count = 0
+	def __init__(self):
+		C.count += 1
+	def __del__(self):
+		C.count -= 1
+a= C()
+b= C()
+c= C()
+C.count
+del a
+C.count
+
+#定义一个栈（Stack）类，用于模拟一种具有先进后出（LIFO）特性的数据结构。至少需要有一下方法
+#isEmpty()  判断当前栈是否为空（返回True或False）
+#push()     往栈的顶部压入一个数据项
+#pop()      从栈顶弹出一个数据项（并在栈中删除）
+#top()      显示当前栈顶的一个数据项
+#bottom()   显示当前栈底的一个数据项
+class Stack:
+	def __init__(self,start=[]):
+		self.stack = []
+		for x in start:
+			self.push(x)
+			
+	def isEmpty(self):
+		return not self.stack
+	def push(self,obj):
+		self.stack.append(obj)
+	def pop(self):
+		if not self.stack:
+			print('警告：栈为空！')
+		else:
+			return self.stack.pop()
+	def top(self):
+		if not self.stack:
+			print('警告：栈为空！')
+		else:
+			return self.stack[-1]
+	def bottom(self):
+		if not self.stack:
+			print('警告：栈为空！')
+		else:
+			return self.stack[0]
