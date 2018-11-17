@@ -1,0 +1,562 @@
+class Rectangle:
+	'''
+	定义一个矩形类，需要长和宽两个数据，
+	拥有计算周长和面积的两个方法。
+	拥有对象在初始化的时候拥有"长"和"宽"两个参数，
+	因此需要重写_ _init_ _()方法，因为我们说过，
+	_ _init_ _()方法是类在实例化成对象的时候首先会调用的一个方法
+	'''
+	def __init__(self,x,y):
+		self.x = x
+		self.y = y
+	def getPrei(self):
+		return (self.x+self.y)*2
+	def getArea(self):
+		return self.x*self.y
+a=Rectangle(3,4)
+a.getPrei()
+a.getPrei()
+
+#__new__(cls[,...])
+class CapStr(str):
+	def __new__(cls,string):
+		string = string.upper()
+		return str.__new__(cls,string)
+a = CapStr('gdfuweu')
+a
+
+#__del__(self)
+class C:
+	def __init__(self):
+		print('init方法被调用')
+	def __del__(self):
+		print('del方法被调用')
+c1=C()
+c2=c1
+c3=c2
+del c1
+del c2
+del c3
+
+#文件对象进行包装，删除对象时文件自动关闭
+class FileObject:
+	def __init__(self,filename = 'class1.py'):
+		#读写模式打开一个文件
+		self.new_file = open(filename,'r+')
+	def __del__(self):
+		self.new_file.close()
+		del self.new_file
+		
+#定义类实现摄氏度转换为华氏度
+class C2F(float):
+	def __new__(cls,arg = 0.0):
+		return float.__new__(cls,arg*1.8+32)
+
+#定义一个类继承于int类型，并实现一个特殊功能：当传入的参数时字符串时，返回该字符串中所有字符的ASCII码的和（使用ord（）获得一个字符的ASCII码值）
+class Nint(int):
+	def __new__(cls,arg = 0):
+		if isinstance(arg,str):
+			total = 0
+			for each in arg:
+				total += ord(each)
+			arg = total
+		return int.__new__(cls,arg)
+		
+#定义一个Nstr类，支持字符串的相减操作：A-B，从A中去除所有B的子字符串。
+class Nstr(str):
+	def __sub__(self,other):
+		return self.replace(other,'')
+		
+#移位操作符是应用于二进制操作数的，定义一个新的类Nstr，也支持移位操作符的运算
+class Nstr(str):
+	def __lshift__(self,other):
+		return self[other:]+self[:other]
+	def __rshift__(self,other):
+		return self[:-other]+self[-other:]
+		
+#定义一个类Nstr，当该类的实例对象间发生的加减乘除运算时，将该对象的所有字符串的ASCII码之和进行运算
+class Nstr(int):
+	def __new__(cls,arg=0):
+		if isinstance(arg,str):
+			total = 0
+			for each in arg:
+				total += ord(each)
+			arg = total
+		return int.__new__(cls,arg)
+		
+#复杂版本
+class Nstr:
+	def __init__(self,arg = ''):
+		if isinstance(arg,str):
+			self.total = 0
+			for each in arg:
+				self.total += ord(each)
+		else :
+			print('参数错误！')
+	def __add__(self,other):
+		return self.total + other.total
+	def __sub__(self,other):
+		return self.total - other.total
+	def __mul__(self,other):
+		return self.total * other.total
+	def __truediv__(self,other):
+		return self.total / other.total
+	def __floordiv__(self,other):
+		return self.total // other.total
+
+#当实例化一个类时，自动判断传入多少个参数，并显示出来		
+class C:
+	def __init__(self,*args):
+		if not args:
+			print('没有传入参数')
+		else:
+			print('传入了%d个参数，分别是：'%len(args),end = '')
+			for each in args:
+				print (each,end= ' ')
+				
+#定义一个Word类继承于字符串，重写比较操作符，当两个Word类对象进行比较时，根据单词长度进行比较大小
+#实例化时如果传入的是带空格的字符串，取第一个空格前的单词作为参考。
+class Word(str):
+	def __new__(cls,word):
+		if ' ' in word:
+			print ('Value contains spaces. Truncating to first space.')
+			word = word[:word.index(' ')]
+		return str.__new__(cls,word)
+	def __gt__(self,other):
+		return len(self)>len(other)
+	def __lt__(self,other):
+		return len(self)<len(other)
+	def __ge__(self,other):
+		return len(self)>=len(other)
+	def __le__(self,other):
+		return len(self)<=len(other)
+		
+#计时器
+#start和stop方法代表启动计时和停止计时
+#假设计时器对象t1，print(t1)和直接调用t1均显示结果
+#当计时器未启动或已经停止计时，调用stop方法会给予温馨的提示
+#两个计时器对象可以进行相加：t1 + t2
+#只能使用提供的有限资源完成
+#资源有：
+#使用time模块的localtime方法获取时间
+#time.localtime返回struct_time的时间格式
+#表现你的类：__str__ ()和 __repr__()魔法方法		
+import time as t
+class MyTimer:
+    def __init__(self):
+        self.unit = ['年', '月', '天', '小时', '分钟', '秒']
+        self.prompt = "未开始计时！"
+        self.lasted = []
+        self.begin = 0
+        self.end = 0
+    def __str__(self):
+        return self.prompt
+    __repr__ = __str__
+	#两个计时器对象相加会自动返回时间的和
+    def __add__(self, other):
+        prompt = "总共运行了"
+        result = []
+        for index in range(6):
+            result.append(self.lasted[index] + other.lasted[index])
+            if result[index]:
+                prompt += (str(result[index]) + self.unit[index])
+        return prompt
+    # 开始计时
+    def start(self):
+        self.begin = t.localtime()
+        self.prompt = "提示：请先调用 stop() 停止计时！"
+        print("计时开始...")
+    # 停止计时
+    def stop(self):
+        if not self.begin:
+            print("提示：请先调用 start() 进行计时！")
+        else:
+            self.end = t.localtime()
+            self._calc()
+            print("计时结束！")
+    # 内部方法，计算运行时间
+    def _calc(self):
+        self.lasted = []
+        self.prompt = "总共运行了"
+        for index in range(6):
+            self.lasted.append(self.end[index] - self.begin[index])
+            if self.lasted[index]:
+                self.prompt += (str(self.lasted[index]) + self.unit[index])
+        # 为下一轮计时初始化变量
+        self.begin = 0
+        self.end = 0
+	
+class C:
+    def __init__(self,size = 10):
+        self.size = size
+    def getSize(self):
+        return self.size
+    def setSize(self,value):
+        self.size = value
+    def delSize(self):
+        del self.size
+    x = property(getSize,setSize,delSize)
+c = C()
+c.x
+c.x=12
+c.x
+c.size
+del c.x
+
+class C:
+    def __getattribute__(self, name):
+        print('getattribute')
+        # 使用 super() 调用 object 基类的 __getattribute__ 方法
+        return super().__getattribute__(name)
+
+    def __setattr__(self, name, value):
+        print('setattr')
+        super().__setattr__(name, value)
+
+    def __delattr__(self, name):
+        print('delattr')
+        super().__delattr__(name)
+
+    def __getattr__(self, name):
+        print('getattr')
+		
+#一个矩形类，默认有宽和高两个属性；
+#如果为一个叫square的属性赋值，那么说明这是一个正方形，值就是正方形的边长，此时宽和高都应该等于边长。
+class Rectangle:
+    def __init__(self, width=0, height=0):
+        self.width = width
+        self.height = height
+
+    def __setattr__(self, name, value):
+        if name == 'square':
+            self.width = value
+            self.height = value
+        else:
+            super().__setattr__(name,value)
+
+    def getArea(self):
+        return self.width * self.height
+		
+#当访问一个不存在的属性时，不报错且提示“该属性不存在”
+class Demo:
+	def __getattr__(self,name):
+		return '该属性不存在！'
+		
+class Demo:
+	def __getattr__(self,name):
+		self.name = 'FishC'
+		return self.name
+		
+#写一个Counter类，用于实时检测对象有多少属性
+class Counter:
+	def __init__(self):
+		super().__setattr__('counter',0)
+	def __setattr__(self,name,value):
+		super().__setattr__('counter',self.counter+1)
+		super().__setattr__(name,value)
+	def __delattr__(self,name):
+		super().__setattr__('counter',self.counter-1)
+		super().__delattr__(name)
+		
+#MyDescriptor
+class MyDescriptor:
+    def __get__(self, instance, owner):  #owner是这个描述符的拥有者所在的类本身。
+        print("getting...", self, instance, owner)  #self是描述符类自身的实例；
+    def __set__(self, instance, value):
+        print("setting...", self, instance, value)#instance是这个描述符的拥有者所在的类的实例，在这里也就是Test类的实例；
+    def __delete__(self, instance):
+        print("deleting...", self, instance)
+class Test:
+    x = MyDescriptor()
+	
+#自己写一个Property()函数
+class MyProperty:
+    def __init__(self, fget=None, fset=None, fdel=None):
+        self.fget = fget
+        self.fset = fset
+        self.fdel = fdel
+    def __get__(self, instance, owner):
+        return self.fget(instance) #fget是一个用来获取属性值的函数
+    def __set__(self, instance, value):
+        self.fset(instance, value) #fset是一个用来设置属性值的函数；
+    def __delete__(self, instance):
+        self.fdel(instance) #fdel是一个用来删除某个属性值的函数
+class C:
+    def __init__(self):
+        self._x = None
+    def getX(self):
+        return self._x
+    def setX(self, value):
+        self._x = value
+    def delX(self):
+        del self._x
+    x = MyProperty(getX, setX, delX)
+	
+#定义一个温度类，然后定义两个描述符类用于描述摄氏度和华氏度两个属性。
+#要求两个属性会自动进行转换，也就是说你可以给摄氏度这个属性赋值，然后打印的华氏度属性是自动转换后的结果。
+class Celsius:
+    def __init__(self, value = 26.0):
+        self.value = float(value)
+    def __get__(self, instance, owner):
+        return self.value
+    def __set__(self, instance, value):
+        self.value = float(value)
+class Fahrenheit:
+    def __get__(self, instance, owner):
+        return instance.cel * 1.8 + 32
+    def __set__(self, instance, value):
+        instance.cel = (float(value) - 32) / 1.8
+class Temperature:
+    cel = Celsius()
+    fah = Fahrenheit()
+	
+#要求编写描述符MyDes：当类的属性被访问、修改或设置的时候，分别作出提醒。
+#我们这里的描述符起到的作用是间接地保存指定变量的数据。
+class MyDes:
+    def __init__(self, initval=None, name=None):
+        self.val = initval
+        self.name = name
+
+    def __get__(self, instance, owner):
+        print("正在获取变量：", self.name)
+        return self.name
+
+    def __set__(self, instance, value):
+        print("正在修改变量：", self.name)
+        self.name = value
+
+    def __delattr__(self, instance):
+        print("正在删除变量：", self.name)
+        print("┗|｀O′|┛ 嗷~~这个变量没法删除~")
+
+#编写描述符MyDes：记录指定变量的读取和写入操作，并将记录以及触发时间保存到文件
+import time
+class Record:
+    def __init__(self, initval=None, name='x'):
+        self.val = initval
+        self.name = name
+        self.filename = "record.txt"
+
+    def __get__(self, instance, owner):
+        with open(self.filename, 'a', encoding='utf-8') as f:
+            f.write("%s 变量于北京时间 %s 被读取，%s = %s\n" % \
+                    (self.name, time.ctime(), self.name, str(self.val)))
+        return self.val
+
+    def __set__(self, instance, value):
+        filename = "%s_record.txt" % self.name
+        with open(self.filename, 'a', encoding='utf-8') as f:
+            f.write("%s 变量于北京时间 %s 被修改，%s = %s\n" % \
+                    (self.name, time.ctime(), self.name, str(value)))
+        self.val = value
+
+#描述符MyDes，使用文件来存储属性，属性的值会直接存储到对应的pickle的文件中。如果属性被删除了，文件也会同时被删除，属性的名字也会被注销。
+import os
+import pickle
+
+class MyDes:
+    saved = []
+
+    def __init__(self, name='11'):
+        self.name = name
+        self.filename = self.name + '.pkl'
+
+    def __get__(self, instance, owner):
+        if self.name not in MyDes.saved:
+            raise AttributeError("%s 属性还没有赋值！" % self.name)
+
+        with open(self.filename, 'rb') as f:
+            value = pickle.load(f)
+
+        return value
+
+    def __set__(self, instance, value):
+        with open(self.filename, 'wb') as f:
+            pickle.dump(value, f)
+            MyDes.saved.append(self.name)
+
+    def __delete__(self, instance):
+        os.remove(self.filename)
+        MyDes.saved.remove(self.name)
+
+class Test:
+    x = MyDes()
+
+test = Test()
+test.x = 10
+
+#鸭子类型（duck typing）
+class Duck:
+    def quack(self): 
+        print("呱呱呱！")
+    def feathers(self): 
+        print("这个鸭子拥有灰白灰白的羽毛。")
+
+class Person:
+    def quack(self):
+        print("你才是鸭子你们全家人是鸭子！")
+    def feathers(self): 
+        print("这个人穿着一件鸭绒大衣。")
+
+def in_the_forest(duck):
+    duck.quack()
+    duck.feathers()
+
+def game():
+    donald = Duck()
+    john = Person()
+    in_the_forest(donald)
+    in_the_forest(john)
+
+game()
+
+#编写一个不可改变的自定义列表，要求记录列表中每个元素被访问的次数。
+class CountList:
+    def __init__(self, *args):
+        self.values = [x for x in args]
+        self.count = {}.fromkeys(range(len(self.values)), 0)
+        #这里使用列表的下标作为字典的键，注意不能用元素作为字典的键
+        #因为列表的不同下标可能有值一样的元素，但字典不能有两个相同的键
+
+    def __len__(self):
+        return len(self.values)
+
+    def __getitem__(self, key):
+        self.count[key] += 1
+        return self.values[key]
+		
+#定制一个列表，同样要求记录列表中每个元素被访问的次数，这一次我们希望定制的列表功能更加全面一些，比如支持append()、pop()、extend()原生列表所拥有的方法。你应该如何修改呢？
+#要求1：实现获取、设置和删除一个元素的行为（删除一个元素的时候对应的计数器也会被删除）
+#要求2：增加counter(index)方法，返回index参数所指定的元素次数的访问次数
+#要求3：实现append()、pop()、remove()、insert()、clear()和reverse()方法（重写这些方法时注意考虑计数器的对应改变）
+class CountList(list):
+	def __init__(self,*args):
+		super().__init__(args)
+		self.count = []
+		for i in args:
+			self.count.append(0)
+	def __len__(self):
+		return len(self.count)
+	def __getitem__(self,key):
+		self.count[key] += 1
+		return super().__getitem__(key)
+	def __setitem__(self,key,value):
+		self.count[key] += 1
+		super().__setitem__(key,value)
+	def __delitem__(self,key):
+		del self.count[key]
+		super().__delitem__(key)
+	def counter(self,key): #根据下标返回访问的次数
+		return self.count[key]
+	def append(self,value):
+		self.count.append(0)
+        super().append(value)
+    def pop(self, key=-1):
+        del self.count[key]
+        return super().pop(key)
+    def remove(self, value):
+        key = super().index(value)
+        del self.count[key]
+        super().remove(value)
+    def insert(self, key, value):
+        self.count.insert(key, 0)
+        super().insert(key, value)
+    def clear(self):
+        self.count.clear()
+        super().clear()
+    def reverse(self):
+        self.count.reverse()
+        super().reverse()
+
+#用while语句实现for循环
+for each in range(5):
+	print(each)
+	
+alist = range(5)
+it = iter(alist)
+while True:
+	try:
+		print(next(it))
+    except StopIteration:
+        break
+		
+#写一个迭代器，要求输出至今为止的所有闰年。
+import datatime as dt
+class LeapYear:
+	def __init__(self):
+		self.now = dt.data.today().year
+	def isLeapYear(self,year):
+		if(year%4 == 0 and year%100 != 0) or (year %400 == 0):
+			return True
+		else:
+			return False
+	def __iter__(self):
+		return self
+	def __next__(self):
+		while not self.isLeapYear(self.now): #找第一个闰年
+			self.now -= 1
+		temp = self.now #保存第一个闰年
+        self.now -= 1 #为下次迭代作准备
+        return temp
+ly = LeapYear()
+for i in ly:
+    if i > 2000:
+        print(i)
+    else:
+        break
+
+#写一个MyRev类，功能与reversed()相同（内置函数reversed(seq)，是返回一个迭代器，是序列seq的逆序显示）
+class MyRev:
+    def __init__(self, data):
+        self.data = data
+        self.index = len(data)
+    def __iter__(self):
+        return self
+    def __next__(self):
+        if self.index == 0:
+            raise StopIteration
+        self.index = self.index - 1
+        return self.data[self.index]
+myRev = MyRev("FishC")
+for i in myRev:
+    print(i, end=' ')
+
+#实现一个功能与reversed()相同的生成器
+def myRev(data):
+    # 这里用range生成data的倒序索引
+    # 注意，range的结束位置是不包含的
+    for index in range(len(data)-1, -1, -1):
+        yield data[index]
+for i in myRev("i love you"):
+    print(i, end=' ')
+	
+#计算2000000以内的素数之和
+#如果你的想法是将2000000以内的所有素数都找到并存放到一个列表中，再依次进行求和计算，那么这个列表极有可能会撑爆你的内存，所以这道题就必须用到生成器去实现。
+import math
+def is_prime(number):
+    if number > 1:
+        if number == 2:
+            return True
+        if number % 2 == 0:
+            return False
+        for current in range(3, int(math.sqrt(number) + 1), 2):
+            if number % current == 0:
+                return False
+        return True
+    return False
+def get_primes(number):
+    while True:
+        if is_prime(number):
+            yield number
+        number += 1
+def solve():
+    total = 2
+    for next_prime in get_primes(3):  
+	# 2是第一个素数，3是第二个素数，接下来靠+1往上走，靠素数判断方法判断是不是素数，是的话就累加
+        if next_prime < 2000000:
+            total += next_prime
+        else:
+            print(total)
+            return
+if __name__ == '__main__':
+    solve()
