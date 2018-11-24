@@ -1,0 +1,278 @@
+#爬网页
+import urllib.request
+response = urllib.request.urlopen("http://weibo.com/u/5451319250/home?leftnav=1")
+html = response.read()
+html = html.decode("utf-8")
+print(html)
+
+#爬一张图片
+import urllib.request
+req = urllib.request.Request("http://placekitten.com/g/200/300")
+response = urllib.request.urlopen(req)
+cat_img = response.read()
+with open ('cat_200_300.jpg','wb') as f:
+	f.write(cat_img)
+>>> response.geturl()
+'http://placekitten.com/g/200/300'
+>>> response.info()
+<http.client.HTTPMessage object at 0x039BE630>
+>>> print(response.info())
+Date: Tue, 20 Nov 2018 08:38:14 GMT
+Content-Type: image/jpeg
+Content-Length: 7536
+Connection: close
+Set-Cookie: __cfduid=d5f9d250189332b78319b15da7daf37751542703094; expires=Wed, 20-Nov-19 08:38:14 GMT; path=/; domain=.placekitten.com; HttpOnly
+Access-Control-Allow-Origin: *
+Cache-Control: public, max-age=86400
+Expires: Wed, 21 Nov 2018 08:38:14 GMT
+CF-Cache-Status: HIT
+Accept-Ranges: bytes
+Vary: Accept-Encoding
+Server: cloudflare
+CF-RAY: 47c9996485433138-SIN
+>>> response.getcode()
+200
+
+#爬有道翻译网页
+import urllib.request
+import urllib.parse
+import json
+
+content = input('请输入要翻译的内容：')
+url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule"
+
+head = {}
+head['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36'
+
+data = {}
+data['type'] = 'AUTO'
+data['i'] = content
+data['doctype'] = 'json'
+data['version'] = '2.1'
+data['keyfrom'] = 'fanyi.web'
+data['typoResult'] = 'false'
+data['ue'] = 'UTF-8'
+data = urllib.parse.urlencode(data).encode('utf-8')
+
+req = urllib.request.Request(url,data,head)
+response = urllib.request.urlopen(req)
+html = response.read().decode('utf-8')
+target = json.loads(html)
+print('翻译结果：%s'%(target['translateResult'][0][0]['tgt']))
+#有道词典的反爬虫
+import urllib.request
+ 
+import urllib.parse
+import json
+import time
+import random
+import hashlib
+ 
+content = input('请输入需要翻译的句子：')
+ 
+url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule&sessionFrom=https://www.google.com/'
+ 
+data = {}
+ 
+u = 'fanyideskweb'
+d = content
+f = str(int(time.time()*1000) + random.randint(1,10))
+c = 'rY0D^0\'nM0}g5Mm1z%1G4'
+ 
+sign = hashlib.md5((u + d + f + c).encode('utf-8')).hexdigest()#反爬虫主要是这个地方的更改
+#根据网页检查的源码，查找出sign的生成方式，实现反扒
+ 
+data['i'] = content
+data['from'] = 'AUTO'
+data['to'] = 'AUTO'
+data['smartresult'] = 'dict'
+data['client'] = 'fanyideskweb'
+data['salt'] = f
+data['sign'] = sign
+data['doctype'] = 'json'
+data['version'] = '2.1'
+data['keyfrom'] = 'fanyi.web'
+data['action'] = 'FY_BY_CL1CKBUTTON'
+data['typoResult'] = 'true'
+ 
+data = urllib.parse.urlencode(data).encode('utf-8')
+request = urllib.request.Request(url=url,data=data,method='POST')
+response = urllib.request.urlopen(request)
+ 
+print(response.read().decode('utf-8'))
+
+
+#对于同一IP地址频繁访问服务器的反爬虫解决办法
+#1、延迟提交时间
+import urllib.request
+import urllib.parse
+import json
+import time
+
+while True:
+	content = input('请输入要翻译的内容(输入“q！”退出程序)：')
+	if content == 'q!':
+		break
+	url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule"
+
+	'''
+	head = {}
+	head['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36'
+	'''
+
+	data = {}
+	data['type'] = 'AUTO'
+	data['i'] = content
+	data['doctype'] = 'json'
+	data['version'] = '2.1'
+	data['keyfrom'] = 'fanyi.web'
+	data['typoResult'] = 'false'
+	data['ue'] = 'UTF-8'
+	data = urllib.parse.urlencode(data).encode('utf-8')
+
+	req = urllib.request.Request(url,data)
+	req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36')
+
+	response = urllib.request.urlopen(req)
+	html = response.read().decode('utf-8')
+	target = json.loads(html)
+	print('翻译结果：%s'%(target['translateResult'][0][0]['tgt']))
+	time.sleep(5)
+#2、使用代理
+import urllib.request
+import random
+
+url = 'http://ip.chinaz.com/getip.aspx'
+
+iplist = ['124.42.7.103:80','180.118.73.60:9000','123.127.93.188:44399','182.18.13.149:53281','119.57.108.53:53281']
+
+proxy_support = urllib.request.ProxyHandler({'http':random.choice(iplist)})
+
+opener = urllib.request.build_opener(proxy_support)
+opener.addheaders = [('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36')]
+
+urllib.request.install_opener(opener)
+
+response = urllib.request.urlopen(url)
+html = response.read().decode('utf-8')
+
+print(html)
+
+#爬取图片
+import urllib.request
+import os
+
+def url_open(url):
+	req = urllib.request.Request(url)
+	#可以将url先构造成一个Request对象，传进urlopen
+	#Request存在的意义是便于在请求的时候传入一些信息，而urlopen则不
+	req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36')
+	response = urllib.request.urlopen(req)
+	html = response.read()
+	
+	return  html
+
+def get_page(url):
+	html = url_open(url).decode('utf-8')
+	
+	a = html.find('current-comment-page') + 23
+	b = html.find(']',a)
+	
+	return html[a:b]
+	
+def find_imgs(url):
+	html = url_open(url).decode('utf-8')
+	img_addrs = []
+	
+	a = html.find('img src=')
+	
+	while a != -1:
+		b = html.find('.jpg',a,a+255)
+		if b!= -1:
+			img_addrs.append(html[a+9:b+4])
+		else:
+			b = a + 9
+			
+		a = html.find('img src=',b)
+	return img_addrs
+		
+	for each in img_addrs:
+		print (each)
+
+def save_imgs(folder,img_addrs):
+	for each in img_addrs:
+		filename = each.split('/')[-1]
+		with open (filename,'wb') as f:
+			img = url_open(each)
+			f.write(img)
+	
+def download_mm(folder = 'OOXX',pages = 10):
+	os.mkdir(folder)
+	os.chdir(folder)
+	
+	url = 'http://jandan.net/ooxx/'
+	page_num = int(get_page(url))
+	
+	for i in range(pages):
+		page_num -= i
+		page_url = url + 'page-' + str(page_num) +'#comments'
+		img_addrs = find_imgs(page_url)
+		save_imgs(folder,img_addrs)
+		
+if __name__ == '__main__':#如果我们是直接执行某个.py文件的时候，该文件中那么”__name__ == '__main__'“是True,但是我们如果从另外一个.py文件通过import导入该文件的时候，这时__name__的值就是我们这个py文件的名字而不是__main__。
+#这个功能还有一个用处：调试代码的时候，在”if __name__ == '__main__'“中加入一些我们的调试代码，我们可以让外部模块调用的时候不执行我们的调试代码，但是如果我们想排查问题的时候，直接执行该模块文件，调试代码能够正常运行
+	download_mm()
+
+#用正则表达式爬图片
+import urllib.request
+import re
+#import sys
+#import importlib
+
+def open_url(url):
+	req = urllib.request.Request(url)
+	req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36')
+	page = urllib.request.urlopen(req)
+	html = page.read().decode('utf-8')
+	
+	return  html
+	
+def get_img(html):
+	p = r'<img alt="" src="([^"]+\.jpg)"'
+	imglist = re.findall(p,html)
+	'''
+	for each in imglist:
+		print('https://www.bupt.edu.cn' + each)
+	'''
+	for each in imglist:
+		filename = each.split('/')[-1]
+		#importlib.reload(sys)
+		#sys.setdefaultencoding('utf-8')
+		load = str('https://www.bupt.edu.cn' + each)
+		urllib.request.urlretrieve(load,filename,None)
+	
+if __name__ == '__main__':
+	url = 'https://www.bupt.edu.cn/content/content.php?p=1_1_57'
+	get_img(open_url(url))
+
+#用正则表达式爬IP地址
+import urllib.request
+import re
+
+def open_url(url):
+	req = urllib.request.Request(url)
+	req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36')
+	page = urllib.request.urlopen(req)
+	html = page.read().decode('utf-8')
+	return  html
+	
+def get_ip(html):
+	p = r'(?:(?:[0,1]?\d?\d|2[0-4]\d|25[0-5])\.){3}(?:[0,1]?\d?\d|2[0-4]\d|25[0-5])'
+	iplist = re.findall(p,html)
+	
+	for each in iplist:
+		print(each)
+	
+if __name__ == '__main__':
+	url = 'https://www.kuaidaili.com/free/inha/1/'
+	get_ip(open_url(url))
