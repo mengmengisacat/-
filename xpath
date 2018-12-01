@@ -1,0 +1,104 @@
+#coding=utf-8
+'''
+python 3.6  2.7 版本在读取文件时替换格式即可
+
+'''
+from lxml import etree
+html=open('TEST.txt','rb').read()
+selector = etree.HTML(html)
+
+
+#提取文本
+content = selector.xpath('//ul[@id="useful"]/li/text()')
+for each in content:
+    print ('each:',each)
+'''
+each: 数学建模方法
+each: 数学建模数据
+each: 数学建模软件
+'''
+#提取属性
+link = selector.xpath('//a/@href')
+for href in link:
+    print ('href:',href)
+'''
+href: http:nveyun.com
+href: http://nveyun.com/forum.php
+'''
+#提取title
+title = selector.xpath('//a/@title')
+print ('title[0]:',title[0])
+'''
+title[0]: 虐云建模论坛
+'''
+#提取多层字符
+data = selector.xpath('//span[@name="data"]')[0]
+#二进制数'\r\n'
+info = data.xpath('string(.)')
+content=info.replace('\r\n', '').replace(' ', '')
+print('content:',content)
+'''
+content: [书籍数据]数学建模书籍1:29.99数学建模书籍2:39.95
+'''
+#xpath的谓语条件（Predicate）
+'''
+谓"谓语条件"，就是对路径表达式的附加条件。
+所有的条件，都写在方括号"[]"中，表示对节点进行进一步的筛选。
+'''
+#提取book对应的数据
+book=selector.xpath('//title[@lang="eng"]/text()')
+print('book:',book)
+'''
+book: ['数学建模书籍1:', '数学建模书籍2:']
+'''
+#仅提取所需的book数据
+book1=selector.xpath('//book[1]/title[@lang="eng"]/text()')
+print('book1:',book1)
+'''
+book1: ['数学建模书籍1:']
+'''
+#使用last函数，其表示最后一个book子元素。[last()-1]：表示选择的倒数第二个book子元素
+book_last=selector.xpath('//book[last()]/title[@lang="eng"]/text()')
+print('book_last:',book_last)
+'''
+book_last: ['数学建模书籍2:']
+'''
+#[position()<3] ：表示选择前两个book子元素
+book_p=selector.xpath('//book[position()<3]/title[@lang="eng"]/text()')
+print('book_p:',book_p)
+'''
+book_p: ['数学建模书籍1:', '数学建模书籍2:']
+'''
+#//title[@lang] 表示选择所有具有lang属性的title节点。
+lang=selector.xpath('//title[@lang]/text()')
+print('lang',lang)
+
+'''
+lang ['数学建模书籍1:', '数学建模书籍2:']
+'''
+#select price>35 ,book下面的两个标签一个price一个title,如果为//span/book[price>35.00]则选择的是所有 book 元素，且其中的 price 元素的值须大于 35.00。
+
+price_35=selector.xpath('//span/book[price>35.00]/title/text()')
+print('price_35:',price_35)
+'''
+price_35: ['数学建模书籍2:']
+'''
+#=符号要求属性完全匹配，部分匹配可以用contains,如：<div id="content" version="1.0"> 版本1.0
+
+denghao=selector.xpath('//*[@id="content"]/text()')[0].replace('\r\n','')
+print('denghao:',denghao)
+contains=selector.xpath('//*[contains(@id,"content")]/text()')[0].replace('\r\n','')
+print('contains:',contains)
+'''
+denghao:         版本1.0    
+contains:         版本1.0    
+'''
+#运算符：and 和 or   【@class='a'  or @class='b'】
+operators1=selector.xpath('//div[@id="content"]//*[self::ul[@id="useful"]/li or self::span]/text()')
+print('operators1:',operators1)
+operators2=selector.xpath('//div[@id="content"]//*[self::li or self::span]/text()')
+print('operators2:',operators2)
+'''
+operators1: ['\r\n        ', '\r\n        ', '\r\n        ', '\r\n    ', '\r\n       [书籍数据]\r\n     ', '\r\n    ', '\r\n     ']
+operators2: ['数学建模方法', '数学建模数据', '数学建模软件', '不需要的信息１', '不需要的信息２', '不需要的信息３', '\r\n       [书籍数据]\r\n     ', '\r\n    ', '\r\n     ']
+'''
